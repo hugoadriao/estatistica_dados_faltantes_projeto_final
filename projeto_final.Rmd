@@ -179,5 +179,6 @@ ggpairs(data = imputed_data, lower = list(continuous = "smooth"))
 
 10. Disponibilize os códigos (RMarkdown e Shiny) em uma plataforma de compartilhamento de códigos (sugestão GitHub)
 
-    - Todos os códigos desse projeto podem ser acessado no [GitHub]("[income_democracy.xlsx](https://github.com/hugoadriao/estatistica_dados_faltantes_projeto_final)")
-    - Este projeto rmd pode ser visualizado em [GitHub Pages]("https://hugoadriao.github.io/estatistica_dados_faltantes_projeto_final/")
+    - Todos os códigos desse projeto podem ser acessado no [GitHub](https://github.com/hugoadriao/estatistica_dados_faltantes_projeto_final)
+
+    - Este projeto rmd pode ser visualizado em [GitHub Pages](https://hugoadriao.github.io/estatistica_dados_faltantes_projeto_final/)
