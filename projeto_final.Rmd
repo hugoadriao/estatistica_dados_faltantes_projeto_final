@@ -1,0 +1,173 @@
+---
+title: "Análise Exploratória de Dados"
+author: "Hugo Victor dos Santos Silva"
+date: "22 de abril de 2023"
+output:
+  html_document:
+    fig_width: 10
+    fig_height: 6
+---
+
+```{r setup, include=FALSE}
+# Carregando pacotes
+
+library(knitr)
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(Amelia)
+library(mice)
+library(summarytools)
+library(kableExtra)
+library(GGally)
+library(ggpubr)
+```
+
+```{r, include=FALSE}
+# Carregando dados
+
+df_democracy <- read_excel("income_democracy.xlsx")
+
+df_democracy <- df_democracy %>% filter(country == "Chile") %>% select(dem_ind, log_pop, educ, age_median)
+```
+
+# Projeto Final De Análise Exploratória de Dados
+
+**Professor:** Otto Tavares
+
+**Alunos:** Hugo Silva
+
+#### Este trabalho têm como objetivo tentar identificar se há relação entre educ e dem_ind. A hipótese é que quanto maior a educ maior será o dem_ind.
+
+Os dados utilizados nesse trabalho podem ser encontrados em: [Dados]("https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data")
+
+3. Utilizando o pacote summarytools (função descr), descreva estatisticamente a sua base de dados.
+
+```{r}
+descr(df_democracy)
+```
+
+4. Crie um gráfico com a matriz de espalhamento (scatter matrix plot) para sua base de dados.Através
+de investigação visual, quais são as variáveis mais correlacionadas. Apresente o gráfico e justifique.
+
+```{r scatter_plot, warning = FALSE, message = FALSE}
+ggpairs(data = df_democracy, lower = list(continuous = "smooth"))
+```
+
+R= As variáveis de maior correlação são:
+ - age_median X educ
+ - educ X log_pop
+ - age_median X log_pop
+Essas relações fortes ficam bem claras pela distribuição linear descrita nos gráficos de relação.
+
+5. Sobre a normalidade das variáveis:
+   a. Descreva o que é uma distribuição normal
+    - Essa distribuição é caracterizada por uma curva em formato de sino que é simétrica em relação à média, ou seja, os valores iguais acima e abaixo da média possuem a mesma probabilidade de ocorrência.
+   b. Crie um histograma para cada variável da sua base de dados. Justifique a escolha do número de bins para seu trabalho. (usando o pacote ggplot)
+    - A maneira correta de criar um histograma é:
+
+            ```
+            bins_dem_ind = (3.5 * sd(df_democracy$dem_ind)) / (nrow(df_democracy[, "dem_ind"]) ^ (1/3))
+            ggplot(df_democracy, aes(x = dem_ind)) +
+                geom_histogram(bins=bins_dem_ind)
+            ```
+
+      - A equação para definir o número de bins foi feita com base na regra empírica sugerida por [Scott(1979)](https://doi.org/10.1093/biomet/66.3.605)
+      - Como este trabalho apresenta poucos dados para exibição de histogramas, estaremos utilizando `geom_density()`para plotar a estimativa da densidade da distribuição das variáveis. Por meio deste método, é possível visualizar a forma da distribuição da variável, bem como a presença de múltiplos picos, assimetria e caudas pesadas ou leves.
+
+            ```{r histogram, warning = FALSE}
+                ggplot(df_democracy, aes(x = dem_ind)) +
+                    geom_density() +
+                    labs(title = "Estimativa de Densidade para dem_ind")
+
+                ggplot(df_democracy, aes(x = log_pop)) +
+                    geom_density() +
+                    labs(title = "Estimativa de Densidade para log_pop")
+
+                ggplot(df_democracy, aes(x = educ)) +
+                    geom_density() +
+                    labs(title = "Estimativa de Densidade para educ")
+
+                ggplot(df_democracy, aes(x = age_median)) +
+                    geom_density() +
+                    labs(title = "Estimativa de Densidade para age_median")
+            ```
+
+   c. Crie um gráfico Q-Q para cada variável de sua base de dados. (use as funções presentes no pacote ggpubr)
+
+        ```{r, warning=FALSE}
+        # criação dos gráficos Q-Q
+        ggqqplot(df_democracy$educ) + ggtitle("Q-Q Plot - educ")
+        ggqqplot(df_democracy$dem_ind) + ggtitle("Q-Q Plot - dem_ind")
+        ggqqplot(df_democracy$log_pop) + ggtitle("Q-Q Plot - log_pop")
+        ggqqplot(df_democracy$age_median) + ggtitle("Q-Q Plot - age_median")
+        ```
+
+   d. Execute um teste de normalidade Shapiro-Wilk
+
+        ```{r shapiro}
+        # Separa valores para executar teste de Shapiro
+        df_democracy_shapiro_dem_ind <- shapiro.test(df_democracy$dem_ind)
+        df_democracy_shapiro_log_pop <- shapiro.test(df_democracy$log_pop)
+        df_democracy_shapiro_educ <- shapiro.test(df_democracy$educ)
+        df_democracy_shapiro_age_median <- shapiro.test(df_democracy$age_median)
+
+
+        df_shapiro <- data.frame(
+        Variavel = c("dem_ind", "log_pop", "educ", "age_median"),
+        Estatistica = c(df_democracy_shapiro_dem_ind$statistic,
+                        df_democracy_shapiro_log_pop$statistic,
+                        df_democracy_shapiro_educ$statistic,
+                        df_democracy_shapiro_age_median$statistic),
+        p_valor = c(df_democracy_shapiro_dem_ind$p.value,
+                    df_democracy_shapiro_log_pop$p.value,
+                    df_democracy_shapiro_educ$p.value,
+                    df_democracy_shapiro_age_median$p.value)
+        )
+
+        kable(df_shapiro, "html", caption="Teste de Normalidade de Shapiro-Wilk para Dados do Chile") %>%
+            kable_styling("striped")
+        ```
+
+
+    e. Baseado nos itens anteriores, é possível afirmar que algumas das variáveis se aproximam de uma distribuição normal? Justifique.
+
+        R= Sim, a variável `log_pop` pois com base no Q-Q plot e no gráfico de densidade apresentados, podemos observar que os dados parecem seguir uma distribuição normal, pois a linha do Q-Q plot está muito próxima da diagonal e a distribuição no gráfico de densidade é simétrica e com aparência de sino. O p-valor do teste Shapiro-Wilk também confirma essa suspeita, pois um p-valor de 0.9681693 indica que não há evidências suficientes para rejeitar a hipótese nula de que os dados foram amostrados de uma distribuição normal. Portanto, podemos concluir que os dados parecem seguir uma distribuição normal com alta probabilidade.
+
+6. Qualidade de dados tem sido um dos temas mais abordados nos projetos de estruturação em data analytics, sendo um dos principais indicadores do nível de maturidade das organizações. Um dos problemas mais comuns de qualidade é relacionado à completude de dados. Em suas palavras, como é definido completude? Qual o impacto em uma análise exploratória de dados?
+
+        R=O ato de garantir que as informações em um conjunto de dados estejam completas é de grande importância na análise de dados. A completude é a medida em que as informações necessárias estão presentes em um conjunto de dados. Quando informações importantes estão ausentes, os resultados da análise exploratória de dados podem ser afetados. Portanto, é crucial garantir que os dados estejam completos e prontos para a análise. A qualidade dos dados é um aspecto crítico em projetos de ciência de dados e é um dos principais indicadores de maturidade organizacional. É importante lembrar que a completude dos dados deve ser tratada de forma adequada para evitar resultados imprecisos ou conclusões errôneas.
+
+7. Qual a completude para cada uma das variáveis do seu banco de dados?
+
+    ```{r completude}
+    1 - colMeans(is.na(df_democracy))
+    ```
+
+```
+# Cria a matrix de correlação
+cor_matrix <- cor(df_democracy)
+
+# Substitui NA por 0 na matriz
+cor_matrix[is.na(cor_matrix)] <- 0
+
+# Faz a substituição dos dados vazios utilizando as fortes correlações em uma regressão linear
+mice_obj <- mice(df_democracy, method="pmm", predictorMatrix=cor_matrix, seed=456)
+imputed_data <- complete(mice_obj)
+```
+
+```{r, include=FALSE}
+# Cria a matrix de correlação
+cor_matrix <- cor(df_democracy)
+
+# Substitui NA por 0 na matriz
+cor_matrix[is.na(cor_matrix)] <- 0
+
+# Faz a substituição dos dados vazios utilizando as fortes correlações em uma regressão linear
+mice_obj <- mice(df_democracy, method="pmm", predictorMatrix=cor_matrix, seed=456)
+imputed_data <- complete(mice_obj)
+```
+
+```{r, message=FALSE}
+ggpairs(data = imputed_data, lower = list(continuous = "smooth"))
+```
