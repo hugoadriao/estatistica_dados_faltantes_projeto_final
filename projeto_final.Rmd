@@ -39,9 +39,7 @@ df_democracy <- df_democracy %>% filter(country == "Chile") %>% select(dem_ind, 
 
 #### Este trabalho têm como objetivo tentar identificar se há relação entre educ e dem_ind. A hipótese é que quanto maior a educ maior será o dem_ind.
 
-Os dados utilizados nesse trabalho podem ser encontrados em: [Dados]("https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data")
-
-3. Utilizando o pacote summarytools (função descr), descreva estatisticamente a sua base de dados.
+1. Utilizando o pacote summarytools (função descr), descreva estatisticamente a sua base de dados.
 
 ```{r}
 descr(df_democracy)
@@ -145,6 +143,9 @@ Essas relações fortes ficam bem claras pela distribuição linear descrita nos
     ```
 
 ```
+
+8. Realize uma operação de imputação de dados usando o pacote MICE.
+
 # Cria a matrix de correlação
 cor_matrix <- cor(df_democracy)
 
@@ -171,3 +172,13 @@ imputed_data <- complete(mice_obj)
 ```{r, message=FALSE}
 ggpairs(data = imputed_data, lower = list(continuous = "smooth"))
 ```
+
+9. Crie um dashboard Shiny onde seja possível selecionar (tire um print-screen da tela final do sistema):
+
+![Figura 1. Exibindo Aplicação Shiny Com Linha em Azul](./images/app_shiny_blue.jpeg)
+
+![Figura 2. Exibindo Aplicação Shiny Com Linha em Vermelho](./images/app_shiny_red.jpeg)
+
+10. Disponibilize os códigos (RMarkdown e Shiny) em uma plataforma de compartilhamento de códigos (sugestão GitHub)
+
+    - Todos os códigos desse projeto podem ser acessado no [GitHub]("[income_democracy.xlsx](https://github.com/hugoadriao/estatistica_dados_faltantes_projeto_final)")
