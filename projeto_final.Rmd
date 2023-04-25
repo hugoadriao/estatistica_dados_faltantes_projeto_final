@@ -73,23 +73,23 @@ Essas relações fortes ficam bem claras pela distribuição linear descrita nos
       - A equação para definir o número de bins foi feita com base na regra empírica sugerida por [Scott(1979)](https://doi.org/10.1093/biomet/66.3.605)
       - Como este trabalho apresenta poucos dados para exibição de histogramas, estaremos utilizando `geom_density()`para plotar a estimativa da densidade da distribuição das variáveis. Por meio deste método, é possível visualizar a forma da distribuição da variável, bem como a presença de múltiplos picos, assimetria e caudas pesadas ou leves.
 
-            ```{r histogram, warning = FALSE}
-                ggplot(df_democracy, aes(x = dem_ind)) +
-                    geom_density() +
-                    labs(title = "Estimativa de Densidade para dem_ind")
+        ```{r histogram, warning = FALSE}
+            ggplot(df_democracy, aes(x = dem_ind)) +
+                geom_density() +
+                labs(title = "Estimativa de Densidade para dem_ind")
 
-                ggplot(df_democracy, aes(x = log_pop)) +
-                    geom_density() +
-                    labs(title = "Estimativa de Densidade para log_pop")
+            ggplot(df_democracy, aes(x = log_pop)) +
+                geom_density() +
+                labs(title = "Estimativa de Densidade para log_pop")
 
-                ggplot(df_democracy, aes(x = educ)) +
-                    geom_density() +
-                    labs(title = "Estimativa de Densidade para educ")
+            ggplot(df_democracy, aes(x = educ)) +
+                geom_density() +
+                labs(title = "Estimativa de Densidade para educ")
 
-                ggplot(df_democracy, aes(x = age_median)) +
-                    geom_density() +
-                    labs(title = "Estimativa de Densidade para age_median")
-            ```
+            ggplot(df_democracy, aes(x = age_median)) +
+                geom_density() +
+                labs(title = "Estimativa de Densidade para age_median")
+        ```
 
    c. Crie um gráfico Q-Q para cada variável de sua base de dados. (use as funções presentes no pacote ggpubr)
 
@@ -127,14 +127,13 @@ Essas relações fortes ficam bem claras pela distribuição linear descrita nos
             kable_styling("striped")
         ```
 
-
     e. Baseado nos itens anteriores, é possível afirmar que algumas das variáveis se aproximam de uma distribuição normal? Justifique.
 
         R= Sim, a variável `log_pop` pois com base no Q-Q plot e no gráfico de densidade apresentados, podemos observar que os dados parecem seguir uma distribuição normal, pois a linha do Q-Q plot está muito próxima da diagonal e a distribuição no gráfico de densidade é simétrica e com aparência de sino. O p-valor do teste Shapiro-Wilk também confirma essa suspeita, pois um p-valor de 0.9681693 indica que não há evidências suficientes para rejeitar a hipótese nula de que os dados foram amostrados de uma distribuição normal. Portanto, podemos concluir que os dados parecem seguir uma distribuição normal com alta probabilidade.
 
 6. Qualidade de dados tem sido um dos temas mais abordados nos projetos de estruturação em data analytics, sendo um dos principais indicadores do nível de maturidade das organizações. Um dos problemas mais comuns de qualidade é relacionado à completude de dados. Em suas palavras, como é definido completude? Qual o impacto em uma análise exploratória de dados?
 
-        R=O ato de garantir que as informações em um conjunto de dados estejam completas é de grande importância na análise de dados. A completude é a medida em que as informações necessárias estão presentes em um conjunto de dados. Quando informações importantes estão ausentes, os resultados da análise exploratória de dados podem ser afetados. Portanto, é crucial garantir que os dados estejam completos e prontos para a análise. A qualidade dos dados é um aspecto crítico em projetos de ciência de dados e é um dos principais indicadores de maturidade organizacional. É importante lembrar que a completude dos dados deve ser tratada de forma adequada para evitar resultados imprecisos ou conclusões errôneas.
+    R=O ato de garantir que as informações em um conjunto de dados estejam completas é de grande importância na análise de dados. A completude é a medida em que as informações necessárias estão presentes em um conjunto de dados. Quando informações importantes estão ausentes, os resultados da análise exploratória de dados podem ser afetados. Portanto, é crucial garantir que os dados estejam completos e prontos para a análise. A qualidade dos dados é um aspecto crítico em projetos de ciência de dados e é um dos principais indicadores de maturidade organizacional. É importante lembrar que a completude dos dados deve ser tratada de forma adequada para evitar resultados imprecisos ou conclusões errôneas.
 
 7. Qual a completude para cada uma das variáveis do seu banco de dados?
 
@@ -142,10 +141,9 @@ Essas relações fortes ficam bem claras pela distribuição linear descrita nos
     1 - colMeans(is.na(df_democracy))
     ```
 
-```
-
 8. Realize uma operação de imputação de dados usando o pacote MICE.
 
+```
 # Cria a matrix de correlação
 cor_matrix <- cor(df_democracy)
 
@@ -175,9 +173,9 @@ ggpairs(data = imputed_data, lower = list(continuous = "smooth"))
 
 9. Crie um dashboard Shiny onde seja possível selecionar (tire um print-screen da tela final do sistema):
 
-![Figura 1. Exibindo Aplicação Shiny Com Linha em Azul](./images/app_shiny_blue.jpeg)
+![<div style="text-align:center">Figura 1. Exibindo Aplicação Shiny Com Linha em Azul</div>](./images/app_shiny_blue.jpeg)
 
-![Figura 2. Exibindo Aplicação Shiny Com Linha em Vermelho](./images/app_shiny_red.jpeg)
+![<div style="text-align:center">Figura 2. Exibindo Aplicação Shiny Com Linha em Vermelho</div>](./images/app_shiny_red.jpeg)
 
 10. Disponibilize os códigos (RMarkdown e Shiny) em uma plataforma de compartilhamento de códigos (sugestão GitHub)
 
